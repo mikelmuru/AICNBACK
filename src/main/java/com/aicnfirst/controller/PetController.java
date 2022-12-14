@@ -1,11 +1,11 @@
 package com.aicnfirst.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.aicnfirst.service.ValidationService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+// import com.aicnfirst.service.ValidationService;
+// import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,12 +17,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 			+ "Podremos probar aqui la dependencia jackson-databind-nullable.")
 public class PetController {
 	
-	@Autowired
-	private ValidationService validationService;
+	// @Autowired
+	// private ValidationService validationService;
 	
-	private ObjectMapper jacksonMapper = new ObjectMapper();
-	
-//	mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-//	mapper.registerModule(new JsonNullableModule());
+	// private ObjectMapper jacksonMapper = new ObjectMapper();
 
 }

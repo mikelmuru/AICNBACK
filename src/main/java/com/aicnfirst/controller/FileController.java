@@ -57,7 +57,7 @@ public class FileController {
 	
 //	============================GET FILE METHOD==============================
 //	CON {---:.+} INDICAMOS QUE filename TIENE UNA EXTENSION (DIFERNETE SEGUN EL TIPO DE IMG)
-	@GetMapping("/{filename:.*}")
+	@GetMapping("/{filename}")
 	@ApiOperation(value = "Buscador de imagenes",
 				  notes = "Aqui podemos indicar el nombre y extension de una imagen para buscarla"
 				  			+ " en la carpeta de imagenes.")
@@ -65,25 +65,47 @@ public class FileController {
 			@ApiResponse(responseCode = "200", description = "Imagen encontrada."),
 			@ApiResponse(responseCode = "404", description = "Imagen no encontrada en la carpeta.")
 	})
-	public ResponseEntity<Response> getFile(@PathVariable String filename) throws Exception {
+	public ResponseEntity<EncodedImage> getFile(@PathVariable int filename) throws Exception {
 		log.info("He entrado a getFile.");
-		
-		String resultado = "";
-		
-		try {
-			Resource resource = service.load(filename);
-			byte[] fileContent = FileUtils.readFileToByteArray(resource.getFile());
-			resultado = Base64.getEncoder().encodeToString(fileContent);
-			
-			log.info("Imagen cargada y codificada a String (base64).");
-		} catch (Exception e) {
-			resultado = "Error al buscar la imagen. Asegurate de que este registrada.";
-			
-			log.error("Error al cargar la imagen, es posible que no este en la carpeta." + e);
-		}
-		
+
+		EncodedImage busqueda = service.load2(filename);
+		log.info(busqueda.toString());
 		return ResponseEntity
 					.ok()
-					.body(new Response(resultado));
+					.body(busqueda);
+	}
+	
+//	============================GET ALL FILE METHOD==============================
+//	CON {---:.+} INDICAMOS QUE filename TIENE UNA EXTENSION (DIFERNETE SEGUN EL TIPO DE IMG)
+	@GetMapping("/loadAll")
+	@ApiOperation(value = "Cargamos todas las imagenes.",
+				  notes = "Aqui devolvemos todas las imagenes en base64.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Imagenes convertidas y enviadas."),
+			@ApiResponse(responseCode = "404", description = "Imagenes no convertidas.")
+	})
+	public ResponseEntity<Response> loadAll() throws Exception{
+		log.info("He entrado a loadAll.");
+		
+		List<Resource> allResources = service.loadAll();
+		List<String> allImages = new ArrayList<>();
+		List<String> allNames = new ArrayList<>();
+		
+		for (Resource resource:allResources) {
+			try {
+				allNames.add(resource.getFilename());
+				byte[] fileContent = FileUtils.readFileToByteArray(resource.getFile());
+				String resultado = Base64.getEncoder().encodeToString(fileContent);
+				allImages.add(resultado);
+				
+				log.info("Imagen cargada y codificada a String (base64).");
+			} catch (Exception e) {
+				
+				log.error("Error al cargar la imagen, es posible que no este en la carpeta." + e);
+			}
+		}
+		return ResponseEntity
+				.ok()
+				.body(new Response(allImages,allNames));
 	}
 }
