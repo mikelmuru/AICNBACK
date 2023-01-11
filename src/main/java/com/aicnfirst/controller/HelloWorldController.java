@@ -1,8 +1,11 @@
 package com.aicnfirst.controller;
 
+
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +30,26 @@ public class HelloWorldController {
 							+ " entre Spring Boot  y Angular.")
 	public ResponseEntity<Response> helloWorld() {
 		return ResponseEntity.ok().body(new Response("Hello World desde el backend"));
+	}
+
+	@GetMapping("/requestbody")
+	public ResponseEntity<String> pruebaHelloWorldFiltros(@RequestBody Response nombre) {
+		String variable = nombre.getResult();
+
+		return ResponseEntity.ok().body(variable);
+	}
+
+	@GetMapping("/pruebaEndsWith")
+	public ResponseEntity<String> pruebaDevolverLista() {
+		String string = "hola.txt";
+		String resultado = "";
+
+		if (FilenameUtils.getExtension(string) != "") {
+			resultado = "true";
+		} else {
+			resultado = "false";
+		}
+		return ResponseEntity.ok().body(resultado);
 	}
 
 }
